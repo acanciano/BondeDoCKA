@@ -23,10 +23,7 @@ Vagrant.configure('2') do |config|
     echo "192.168.1.60 worker01" >> /etc/hosts
     echo "192.168.1.61 worker02" >> /etc/hosts 
   SHELL
-# Provider
-  config.vm.provider "virtualbox" do |v|
-    v.gui = true
-  end  
+
   config.vm.provision "Instalando Docker", type: "shell",
     inline: "sudo apt update && sudo apt upgrade -y && sudo curl -fsSL get.docker.com | sh"
   vms.each do |name, conf|
@@ -38,5 +35,10 @@ Vagrant.configure('2') do |config|
         vb.cpus = conf['cpus']
       end
     end
+  end
+  # Provider
+  config.vm.provider "virtualbox" do |v|
+    v.vm.provision "shell", path: "scripts/kubelet.sh"
+    v.gui = true
   end
 end  
